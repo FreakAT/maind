@@ -1,5 +1,8 @@
 "use client";
 
+import Image from "next/image";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import {
 	Code,
@@ -10,9 +13,12 @@ import {
 	Settings,
 	VideoIcon,
 } from "lucide-react";
-import Image from "next/image";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { Montserrat } from "next/font/google";
+
+const montserrat = Montserrat({
+	weight: "600",
+	subsets: ["latin"],
+});
 
 const Sidebar = () => {
 	const pathName = usePathname();
@@ -66,13 +72,16 @@ const Sidebar = () => {
 					href="/dashboard"
 					className="flex items-center pl-3 mb-14"
 				>
-					<div className="relative w-12 h-10 mr-4">
+					<div className="relative w-8 h-8 mr-4">
 						<Image
 							fill
 							alt="Logo"
 							src="/logo.png"
 						/>
 					</div>
+					<h1 className={cn("text-2xl font-bold", montserrat.className)}>
+						mAInd
+					</h1>
 				</Link>
 				<div className="space-y-1">
 					{routes.map((route) => (

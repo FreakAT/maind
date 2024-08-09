@@ -2,19 +2,15 @@ import { auth } from "@clerk/nextjs/server";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { NextRequest, NextResponse } from "next/server";
 
-// Access your API key as an environment variable.
-// console.log("lol");
+import { increaseApiLimit, checkApiLimit } from "@/lib/api-limit";
 
 const genAI = new GoogleGenerativeAI(String(process.env.GEMINI_API_KEY));
 
 export async function POST(req: NextRequest) {
-	// console.log("bef try");
 	try {
-		// console.log("enter");
 		const { userId } = auth();
 		const body = await req.json();
 		const { messages } = body;
-		// console.log(messages);
 
 		if (!userId) {
 			return new NextResponse("Unautharized", { status: 401 });
@@ -27,21 +23,22 @@ export async function POST(req: NextRequest) {
 		if (!messages) {
 			return new NextResponse("Messages are required", { status: 400 });
 		}
-		// console.log("auth done");
 
-		// Choose a model that's appropriate for your use case.
+		const freeTrial = await checkApiLimit();
+
+		if (!freeTrial) {
+			return new NextResponse("Free Trial has expired", { status: 403 });
+		}
+
 		const model = genAI.getGenerativeModel({ model: "gemini-1.5-pro" });
-
-		// console.log("before req");
 
 		const result = await model.generateContent(
 			messages[messages.length - 1].content
 		);
 		const response = result.response;
-		// console.log("after req");
-		// console.log("response", response);
 		const text = response.text();
-		// console.log("text", text);
+
+		await increaseApiLimit();
 
 		return NextResponse.json(text);
 	} catch (error) {

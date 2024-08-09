@@ -5,22 +5,27 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import {
-	Code,
-	ImageIcon,
 	LayoutDashboard,
 	MessageSquare,
-	Music,
 	Settings,
-	VideoIcon,
+	// Code,
+	// Music,
+	// ImageIcon,
+	// VideoIcon,
 } from "lucide-react";
 import { Montserrat } from "next/font/google";
+import FreeCounter from "./free-counter";
 
 const montserrat = Montserrat({
 	weight: "600",
 	subsets: ["latin"],
 });
 
-const Sidebar = () => {
+interface SidebarProps {
+	apiLimitCount: number;
+}
+
+const Sidebar = ({ apiLimitCount = 0 }: SidebarProps) => {
 	const pathName = usePathname();
 	const routes = [
 		{
@@ -36,34 +41,34 @@ const Sidebar = () => {
 			color: "text-violet-500",
 		},
 		{
-			label: "Image Generation",
-			icon: ImageIcon,
-			href: "/video",
-			color: "text-orange-500",
-		},
-		{
-			label: "Video Generation",
-			icon: VideoIcon,
-			href: "/video",
-			color: "text-orange-500",
-		},
-		{
-			label: "Music Generation",
-			icon: Music,
-			href: "/music",
-			color: "text-emerald-500",
-		},
-		{
-			label: "Code Generation",
-			icon: Code,
-			href: "/code",
-			color: "text-green-500",
-		},
-		{
 			label: "Settings",
 			icon: Settings,
 			href: "/settings",
 		},
+		// {
+		// 	label: "Image Generation",
+		// 	icon: ImageIcon,
+		// 	href: "/image",
+		// 	color: "text-orange-500",
+		// },
+		// {
+		// 	label: "Video Generation",
+		// 	icon: VideoIcon,
+		// 	href: "/video",
+		// 	color: "text-orange-500",
+		// },
+		// {
+		// 	label: "Music Generation",
+		// 	icon: Music,
+		// 	href: "/music",
+		// 	color: "text-emerald-500",
+		// },
+		// {
+		// 	label: "Code Generation",
+		// 	icon: Code,
+		// 	href: "/code",
+		// 	color: "text-green-500",
+		// },
 	];
 	return (
 		<div className="space-y-4 py-4 flex flex-col h-full bg-[#111827] text-white">
@@ -103,6 +108,7 @@ const Sidebar = () => {
 					))}
 				</div>
 			</div>
+			<FreeCounter apiLimitCount={apiLimitCount} />
 		</div>
 	);
 };

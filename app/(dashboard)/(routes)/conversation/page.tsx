@@ -20,9 +20,11 @@ import { BotAvatar } from "@/components/bot-avatar";
 import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
 import { MessageSquare } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useProModal } from "@/hooks/use-pro-modal";
 
 const Conversation = () => {
 	const router = useRouter();
+	const proModal = useProModal();
 	const [messages, setMessages] = useState<
 		{
 			role: String;
@@ -69,7 +71,9 @@ const Conversation = () => {
 
 			form.reset();
 		} catch (error: any) {
-			console.log(error);
+			if (error?.response?.status === 403) {
+				proModal.onOpen();
+			}
 		} finally {
 			router.refresh();
 		}
@@ -116,7 +120,11 @@ const Conversation = () => {
 					</Form>
 				</div>
 				<div className="space-y-4 mt-4">
-					{isLoading && <Loader />}
+					{isLoading && (
+						<div className="p-8 rounded-lg w-full flex items-center justify-center bg-muted">
+							<Loader />
+						</div>
+					)}
 					{messages.length === 0 && !isLoading && (
 						<Empty label="No Conversation started." />
 					)}
